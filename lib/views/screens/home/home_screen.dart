@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:simple_image_genarator/core/models/quality_model.dart';
+import 'package:simple_image_genarator/getx/image_generate_state.dart';
 import 'package:simple_image_genarator/utils/style.dart';
 import 'package:simple_image_genarator/views/glob_widgets/gradiunt_container.dart';
 import 'package:simple_image_genarator/views/screens/home/items/quality_item.dart';
@@ -14,9 +17,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final List<Quality> qualityList = Quality.getQualityList();
-  final List<String> resoList = ['512x512', '1024x1024'];
-  String selectedResolution = '512x512';
+  final List<String> resoList = ['256x256', '512x512', '1024x1024'];
+
   final TextEditingController promptController = TextEditingController();
+  final ImageGenerateState _imageGenerateState = Get.put(ImageGenerateState());
+
+  String selectedQuality = '';
+  String selectedResolution = '256x256';
 
   @override
   Widget build(BuildContext context) {
@@ -68,108 +75,138 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                Text(
-                  'Choose Quality',
-                  style:
-                      titleBoldText.copyWith(fontSize: 18, color: Colors.white),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 100,
-                  child: ListView.builder(
-                    itemCount: qualityList.length,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      final quality = qualityList[index];
-                      return QualityItem(
-                        imageUrl: quality.imageUrl,
-                        name: quality.name,
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  'Resolution',
-                  style:
-                      titleBoldText.copyWith(fontSize: 18, color: Colors.white),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  height: 40,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: resoList.length,
-                    itemBuilder: (context, index) {
-                      final reso = resoList[index];
-                      final isSelected = selectedResolution == reso;
-                      return GestureDetector(
-                        onTap: () => setState(() {
-                          selectedResolution = reso;
-                        }),
-                        child: Container(
-                          margin: const EdgeInsets.only(right: 10),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: isSelected ? secondaryColor : Colors.white10,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                                color:
-                                    isSelected ? secondaryColor : Colors.grey),
-                          ),
-                          child: Center(
-                            child: Text(
-                              reso,
-                              style: titleBoldText.copyWith(
-                                fontSize: 16,
-                                color: isSelected ? Colors.white : Colors.grey,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  width: size.width,
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: secondaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () {
-                      // Handle Generate button press
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        HeroIcon(
-                          HeroIcons.sparkles,
-                          size: 24,
-                          color: Colors.white,
-                        ),
-                        const SizedBox(width: 10),
-                        Text(
-                          'Generate Now',
-                          style: titleBoldText.copyWith(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                Obx(() {
+                  return _imageGenerateState.isLoading.value
+                      ? Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : generate_body(size);
+                }),
                 const SizedBox(height: 20),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Column generate_body(Size size) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(
+          'Choose Quality',
+          style: titleBoldText.copyWith(fontSize: 18, color: Colors.white),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 100,
+          child: ListView.builder(
+            itemCount: qualityList.length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              final quality = qualityList[index];
+              bool squality = quality.name == selectedQuality;
+
+              return QualityItem(
+                onTap: () {
+                  setState(() {
+                    selectedQuality = quality.name;
+                  });
+                },
+                isSelected: squality,
+                imageUrl: quality.imageUrl,
+                name: quality.name,
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          'Resolution',
+          style: titleBoldText.copyWith(fontSize: 18, color: Colors.white),
+        ),
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 40,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: resoList.length,
+            itemBuilder: (context, index) {
+              final reso = resoList[index];
+              final isSelected = selectedResolution == reso;
+              return GestureDetector(
+                onTap: () => setState(() {
+                  selectedResolution = reso;
+                }),
+                child: Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: isSelected ? secondaryColor : Colors.white10,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                        color: isSelected ? secondaryColor : Colors.grey),
+                  ),
+                  child: Center(
+                    child: Text(
+                      reso,
+                      style: titleBoldText.copyWith(
+                        fontSize: 16,
+                        color: isSelected ? Colors.white : Colors.grey,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 20),
+        SizedBox(
+          width: size.width,
+          height: 50,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: secondaryColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            onPressed: () async {
+              final promt = promptController.text;
+              // Handle Generate button press
+              if (promt.isNotEmpty &&
+                  selectedQuality.isNotEmpty &&
+                  selectedResolution.isNotEmpty) {
+                _imageGenerateState.generateNow(
+                    promt, selectedQuality, selectedResolution);
+              } else {
+                Get.snackbar('Empty', 'Please fillup all feilds');
+              }
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                HeroIcon(
+                  HeroIcons.sparkles,
+                  size: 24,
+                  color: Colors.white,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  'Generate Now',
+                  style: titleBoldText.copyWith(
+                      fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
