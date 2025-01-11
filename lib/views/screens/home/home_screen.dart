@@ -1,3 +1,6 @@
+import 'dart:typed_data';
+
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -7,6 +10,7 @@ import 'package:simple_image_genarator/getx/image_generate_state.dart';
 import 'package:simple_image_genarator/utils/style.dart';
 import 'package:simple_image_genarator/views/glob_widgets/gradiunt_container.dart';
 import 'package:simple_image_genarator/views/screens/home/items/quality_item.dart';
+import 'package:stability_image_generation/stability_image_generation.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,14 +20,30 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final List<Quality> qualityList = Quality.getQualityList();
-  final List<String> resoList = ['256x256', '512x512', '1024x1024'];
-
-  final TextEditingController promptController = TextEditingController();
   final ImageGenerateState _imageGenerateState = Get.put(ImageGenerateState());
+  final TextEditingController promptController = TextEditingController();
 
-  String selectedQuality = '';
-  String selectedResolution = '256x256';
+  final List<Quality> qualityList = Quality.getQualityList();
+  final List<String> resoList = [
+    '16:9',
+    '1:1',
+    '21:9',
+    '2:3',
+    '3:2',
+    '4:5',
+    '5:4',
+    '9:16',
+    '9:21'
+  ];
+
+  String selectedResolution = '1:1';
+  String selectedQuality = 'Anime';
+  ImageAIStyle _imageAIStyle = ImageAIStyle.anime;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,12 +97,66 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(height: 20),
                 Obx(() {
                   return _imageGenerateState.isLoading.value
-                      ? Center(
-                          child: CircularProgressIndicator(),
+                      ? SizedBox(
+                          width: double.infinity,
+                          child: DefaultTextStyle(
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            child: AnimatedTextKit(
+                              animatedTexts: [
+                                FadeAnimatedText('Geting promt..'),
+                                FadeAnimatedText('Sending Data..'),
+                                FadeAnimatedText('Generating Image..'),
+                              ],
+                              onTap: () {
+                                print("Tap Event");
+                              },
+                            ),
+                          ),
                         )
-                      : generate_body(size);
+                      : _imageGenerateState.generatedImage.value != null
+                          ? Column(
+                              children: [
+                                Image.memory(
+                                    _imageGenerateState.generatedImage.value!),
+                                ElevatedButton(onPressed: () {
+                                  _imageGenerateState.saveImageToGallery();
+                                }, child: Obx(() {
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      _imageGenerateState.isDownloading.value
+                                          ? SizedBox()
+                                          : HeroIcon(
+                                              HeroIcons.arrowDown,
+                                              size: 24,
+                                              color: Colors.white,
+                                            ),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        _imageGenerateState.isDownloading.value
+                                            ? 'Saving..'
+                                            : 'Save to Gallery',
+                                        style: titleBoldText.copyWith(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  );
+                                }))
+                              ],
+                            )
+                          : const Text(
+                              'No image generated yet',
+                              style: TextStyle(color: Colors.white),
+                            );
                 }),
                 const SizedBox(height: 20),
+                generate_body(size),
               ],
             ),
           ),
@@ -94,7 +168,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Column generate_body(Size size) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
           'Choose Quality',
@@ -104,11 +177,12 @@ class _HomeScreenState extends State<HomeScreen> {
         SizedBox(
           height: 100,
           child: ListView.builder(
-            itemCount: qualityList.length,
             scrollDirection: Axis.horizontal,
+            itemCount: qualityList.length,
             itemBuilder: (context, index) {
               final quality = qualityList[index];
-              bool squality = quality.name == selectedQuality;
+              _imageAIStyle = quality.style;
+              final isSelected = quality.name == selectedQuality;
 
               return QualityItem(
                 onTap: () {
@@ -116,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     selectedQuality = quality.name;
                   });
                 },
-                isSelected: squality,
+                isSelected: isSelected,
                 imageUrl: quality.imageUrl,
                 name: quality.name,
               );
@@ -176,16 +250,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            onPressed: () async {
-              final promt = promptController.text;
-              // Handle Generate button press
-              if (promt.isNotEmpty &&
+            onPressed: () {
+              final prompt = promptController.text.trim();
+              if (prompt.isNotEmpty &&
                   selectedQuality.isNotEmpty &&
                   selectedResolution.isNotEmpty) {
-                _imageGenerateState.generateNow(
-                    promt, selectedQuality, selectedResolution);
+                _imageGenerateState.generate(
+                    prompt, _imageAIStyle, selectedResolution);
               } else {
-                Get.snackbar('Empty', 'Please fillup all feilds');
+                Get.snackbar('Empty Fields', 'Please fill up all fields');
               }
             },
             child: Row(

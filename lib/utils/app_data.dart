@@ -1,8 +1,7 @@
 import 'package:heroicons/heroicons.dart';
 
 const appName = 'SoftImageAi';
-const apiKey =
-    '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';
+const apiKey = 'sk-ZNID3qk9citup2TI3y3pU8PdG8TOdNEc5yHgF9rC5sLnWO17';
 
 const homeIcon = HeroIcon(HeroIcons.home);
 const settingsIcon = HeroIcon(HeroIcons.cog6Tooth);

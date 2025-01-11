@@ -38,17 +38,19 @@ class QualityItem extends StatelessWidget {
                   width: double.infinity,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(9),
-                    child: Image.network(
+                    child: Image.asset(
                       imageUrl,
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
                 Expanded(
-                  child: Text(
-                    name,
-                    style: titleBoldText.copyWith(
-                        fontSize: 12, color: secondaryColor),
+                  child: Center(
+                    child: Text(
+                      name,
+                      style: titleBoldText.copyWith(
+                          fontSize: 12, color: secondaryColor),
+                    ),
                   ),
                 )
               ],
