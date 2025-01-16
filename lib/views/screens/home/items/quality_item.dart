@@ -15,11 +15,11 @@ class QualityItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 5),
+    return Padding(
+      padding: const EdgeInsets.only(left: 5),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
         child: Container(
             width: 100,
             height: 120,
@@ -45,12 +45,10 @@ class QualityItem extends StatelessWidget {
                   ),
                 ),
                 Expanded(
-                  child: Center(
-                    child: Text(
-                      name,
-                      style: titleBoldText.copyWith(
-                          fontSize: 12, color: secondaryColor),
-                    ),
+                  child: Text(
+                    textAlign: TextAlign.center,
+                    name,
+                    style: bodyText.copyWith(color: secondaryColor),
                   ),
                 )
               ],

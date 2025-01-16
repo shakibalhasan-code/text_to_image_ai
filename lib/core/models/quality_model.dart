@@ -91,4 +91,10 @@ class Quality {
           style: ImageAIStyle.christmas),
     ];
   }
+
+  static Quality? getQualityByName(String name) {
+    return getQualityList().firstWhere((quality) => quality.name == name,
+        orElse: () =>
+            Quality(name: '', imageUrl: '', style: ImageAIStyle.anime));
+  }
 }

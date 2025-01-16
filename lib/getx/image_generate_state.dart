@@ -29,7 +29,8 @@ class ImageGenerateState extends GetxController {
           apiKey: apiKey, imageAIStyle: ImageAIStyle.cartoon, prompt: query);
       generatedImage.value = image; // Update image
     } catch (e) {
-      Get.snackbar('Error', 'Failed to generate image: $e');
+      Get.snackbar('Error', 'Failed to generate image: $e',
+          backgroundColor: Colors.red, colorText: Colors.white);
     } finally {
       isLoading.value = false;
     }
@@ -40,27 +41,28 @@ class ImageGenerateState extends GetxController {
     try {
       isDownloading.value = true;
       if (generatedImage.value == null) {
-        Get.snackbar('Error', 'No image to save');
+        Get.snackbar('Error', 'No image to save',
+            backgroundColor: Colors.red, colorText: Colors.white);
         return;
       }
 
       if (await _requestPermission(Permission.storage) == true) {
         print("Permission is granted");
 
-        // Get the external storage directory
-        final directory = Directory('/storage/emulated/0/TextToImage');
-        if (!directory.existsSync()) {
-          directory.createSync(recursive: true);
+        final directory = await getExternalStorageDirectory();
+        final customDir = Directory('${directory?.path}/TextToImage');
+        if (!customDir.existsSync()) {
+          customDir.createSync(recursive: true);
         }
-
         final filePath =
-            '${directory.path}/generated_image_${DateTime.now().millisecondsSinceEpoch}.png';
+            '${customDir.path}/generated_image_${DateTime.now().millisecondsSinceEpoch}.png';
         final file = File(filePath);
 
         // Write the image to external storage
         await file.writeAsBytes(generatedImage.value!);
 
-        Get.snackbar('Success', 'Image saved in Downloads folder');
+        Get.snackbar('Success', 'Image saved in TextToImage folder',
+            backgroundColor: secondaryColor, colorText: Colors.white);
       } else {
         Get.bottomSheet(Container(
           width: double.infinity,
@@ -80,15 +82,12 @@ class ImageGenerateState extends GetxController {
                   children: [
                     Text(
                       'Warning !',
-                      style: titleBoldText.copyWith(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: secondaryColor),
+                      style: titleText.copyWith(color: secondaryColor),
                     ),
                     const Spacer(),
                     Text(
                       'close',
-                      style: titleBoldText.copyWith(
+                      style: bodyText.copyWith(
                           fontSize: 14, color: secondaryColor),
                     ),
                   ],
@@ -109,10 +108,7 @@ class ImageGenerateState extends GetxController {
                 Center(
                   child: Text(
                     'To Save this image we need file manager permission, please allow permission and save it',
-                    style: titleBoldText.copyWith(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: secondaryColor),
+                    style: bodyText.copyWith(color: secondaryColor),
                   ),
                 ),
                 const SizedBox(
@@ -129,8 +125,8 @@ class ImageGenerateState extends GetxController {
         ));
       }
     } catch (e) {
-      print(e);
-      Get.snackbar('Error', 'Failed to save image: $e');
+      Get.snackbar('Error', 'Failed to save image: $e',
+          backgroundColor: Colors.red, colorText: Colors.white);
     } finally {
       isDownloading.value = false;
     }

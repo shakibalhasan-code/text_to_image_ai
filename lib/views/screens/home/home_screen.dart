@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           const SizedBox(width: 10),
                           Text(
                             'Write Your Prompt Here',
-                            style: titleBoldText.copyWith(fontSize: 16),
+                            style: titleText,
                           ),
                         ],
                       ),
@@ -80,8 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         maxLines: 4,
                         decoration: InputDecoration(
                           hintText: 'Write something...',
-                          hintStyle: titleBoldText.copyWith(
-                              fontSize: 14, color: Colors.grey),
+                          hintStyle: bodyText.copyWith(color: Colors.grey),
                           filled: true,
                           fillColor: Colors.white10,
                           border: OutlineInputBorder(
@@ -141,9 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         _imageGenerateState.isDownloading.value
                                             ? 'Saving..'
                                             : 'Save to Gallery',
-                                        style: titleBoldText.copyWith(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold),
+                                        style: titleText,
                                       ),
                                     ],
                                   );
@@ -171,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         Text(
           'Choose Quality',
-          style: titleBoldText.copyWith(fontSize: 18, color: Colors.white),
+          style: titleText,
         ),
         const SizedBox(height: 10),
         SizedBox(
@@ -200,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
         const SizedBox(height: 20),
         Text(
           'Resolution',
-          style: titleBoldText.copyWith(fontSize: 18, color: Colors.white),
+          style: titleText,
         ),
         const SizedBox(height: 10),
         SizedBox(
@@ -228,8 +225,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Center(
                     child: Text(
                       reso,
-                      style: titleBoldText.copyWith(
-                        fontSize: 16,
+                      style: titleText.copyWith(
                         color: isSelected ? Colors.white : Colors.grey,
                       ),
                     ),
@@ -272,8 +268,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(width: 10),
                 Text(
                   'Generate Now',
-                  style: titleBoldText.copyWith(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                  style: titleText,
                 ),
               ],
             ),

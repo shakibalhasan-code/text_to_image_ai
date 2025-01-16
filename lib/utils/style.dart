@@ -1,13 +1,17 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 var primaryColor = Color(0xff1f294c);
 var secondaryColor = Color(0xff6c73bd);
 const foregroundColor = Colors.white;
+const greyColor = Colors.grey;
 
-const titleBoldText =
-    TextStyle(fontWeight: FontWeight.bold, color: Colors.white);
+var titleText = GoogleFonts.poppins(
+    fontSize: 18, fontWeight: FontWeight.w500, color: foregroundColor);
+
+var bodyText = GoogleFonts.poppins(
+    fontSize: 14, fontWeight: FontWeight.w400, color: foregroundColor);
 
 var myTheme = ThemeData(
     cardTheme: CardTheme(
@@ -41,7 +45,7 @@ var myTheme = ThemeData(
     elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
             elevation: WidgetStatePropertyAll(0),
-            textStyle: MaterialStatePropertyAll(titleBoldText.copyWith(
+            textStyle: MaterialStatePropertyAll(titleText.copyWith(
                 fontWeight: FontWeight.bold, color: foregroundColor)),
             backgroundColor: WidgetStatePropertyAll(secondaryColor),
             foregroundColor: WidgetStatePropertyAll(foregroundColor))));

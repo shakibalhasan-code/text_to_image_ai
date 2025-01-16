@@ -12,7 +12,7 @@ class TabScreen extends StatefulWidget {
 }
 
 class _TabScreenState extends State<TabScreen> {
-  final List<Widget> screens = [const HomeScreen(), const SettingsScreen()];
+  final List<Widget> screens = [HomeScreen(), const SettingsScreen()];
   int currentIndex = 0;
 
   @override
@@ -22,14 +22,14 @@ class _TabScreenState extends State<TabScreen> {
         backgroundColor: primaryColor,
         elevation: 3,
         centerTitle: true,
-        title: Text(appName, style: titleBoldText.copyWith(fontSize: 18)),
+        title: Text(appName, style: titleText.copyWith(fontSize: 18)),
         actions: [],
       ),
       body: screens[currentIndex],
       bottomNavigationBar: BottomNavigationBar(
           backgroundColor: primaryColor,
           type: BottomNavigationBarType.fixed, // Fixed
-          elevation: 4,
+          elevation: 8,
           currentIndex: currentIndex,
           onTap: (i) {
             setState(() {
