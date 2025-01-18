@@ -7,10 +7,10 @@ var secondaryColor = Color(0xff6c73bd);
 const foregroundColor = Colors.white;
 const greyColor = Colors.grey;
 
-var titleText = GoogleFonts.poppins(
+var titleText = GoogleFonts.robotoMono(
     fontSize: 18, fontWeight: FontWeight.w500, color: foregroundColor);
 
-var bodyText = GoogleFonts.poppins(
+var bodyText = GoogleFonts.robotoMono(
     fontSize: 14, fontWeight: FontWeight.w400, color: foregroundColor);
 
 var myTheme = ThemeData(

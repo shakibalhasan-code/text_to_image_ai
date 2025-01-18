@@ -8,3 +8,9 @@ const settingsIcon = HeroIcon(HeroIcons.cog6Tooth);
 const darkIcon = HeroIcon(HeroIcons.moon);
 const lightIcon = HeroIcon(HeroIcons.sun);
 const magicIcon = HeroIcon(HeroIcons.sparkles);
+
+//settings_screen
+var notificationIcon = HeroIcons.bell;
+var rateIcon = HeroIcons.star;
+var rightArrow = HeroIcons.arrowRight;
+var shareIcon = HeroIcons.share;

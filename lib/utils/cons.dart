@@ -21,3 +21,4 @@ const imagePortrait = 'assets/images/portrait.jpg';
 const imageRenaissance = 'assets/images/renaissance.jpg';
 const imageSoviet = 'assets/images/soviet.jpg';
 const imageStudio = 'assets/images/studio.jpg';
+const imageSplash = 'assets/images/splash_1.png';
