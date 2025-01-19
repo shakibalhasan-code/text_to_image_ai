@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:simple_image_genarator/core/services/my_shared_preference.dart';
+import 'package:simple_image_genarator/getx/splash/splash_screen_state.dart';
 import 'package:simple_image_genarator/utils/cons.dart';
 import 'package:simple_image_genarator/utils/style.dart';
+import 'package:simple_image_genarator/views/screens/splash/intro_screen.dart';
+import 'package:simple_image_genarator/views/screens/tab/tab_screen.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -10,6 +14,9 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+
+    final _sharedServices = Get.put(MySharedServices());
+
 
     return Scaffold(
       body: Stack(
@@ -34,60 +41,44 @@ class SplashScreen extends StatelessWidget {
             ),
           ),
           // Content
+          // Content
           Positioned(
             left: 20,
             right: 20,
             bottom: screenHeight * 0.1,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Title Text
-                Text(
-                  'Transform Your Idea Into Reality',
-                  style: titleText.copyWith(
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white,
-                    fontSize: screenWidth * 0.07,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 10),
-                // Subtitle Text
-                Text(
-                  'Your AI visual assistant, tailored to your creativity with over 25+ effects.',
-                  style: bodyText.copyWith(
-                    fontSize: screenWidth * 0.04,
-                    color: Colors.white70,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 40),
-                // Start Button
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: screenWidth * 0.3,
-                      vertical: screenHeight * 0.02,
+            child: FutureBuilder(
+              future: _sharedServices.initUser(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // Show loading indicator while waiting
+                  return Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  );
+                } else if (snapshot.hasError) {
+                  // Show error message if the future fails
+                  return Center(
+                    child: Text(
+                      'Error initializing user: ${snapshot.error}',
+                      style: TextStyle(color: Colors.white),
                     ),
-                    backgroundColor: primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
+                  );
+                } else if (snapshot.hasData) {
+                  // Show appropriate screen based on `isNewUser`
+                  return Obx(() {
+                    return _sharedServices.isNewUser.value
+                        ? IntroScreen()
+                        : TabScreen();
+                  });
+                } else {
+                  // Handle unexpected states
+                  return Center(
+                    child: Text(
+                      'Unexpected error occurred.',
+                      style: TextStyle(color: Colors.white),
                     ),
-                    elevation: 5,
-                  ),
-                  onPressed: () {
-                    Get.offNamed('/home');
-                  },
-                  child: Text(
-                    'Start Now',
-                    style: titleText.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: screenWidth * 0.05,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ],
+                  );
+                }
+              },
             ),
           ),
         ],
@@ -95,3 +86,6 @@ class SplashScreen extends StatelessWidget {
     );
   }
 }
+
+
+

@@ -120,8 +120,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Image.memory(
                                     _imageGenerateState.generatedImage.value!),
-                                ElevatedButton(onPressed: () {
-                                  _imageGenerateState.saveImageToGallery();
+                                ElevatedButton(onPressed: () async {
+                                  await _imageGenerateState
+                                      .saveImageToGallery();
                                 }, child: Obx(() {
                                   return Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
