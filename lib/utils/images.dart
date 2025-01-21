@@ -1,3 +1,5 @@
+import 'package:heroicons/heroicons.dart';
+
 const image3d = 'assets/images/3d.jpg';
 const imageAnime = 'assets/images/anime.jpg';
 const imageAvazovskyJpg = 'assets/images/avazovsky.jpg';
@@ -22,3 +24,16 @@ const imageRenaissance = 'assets/images/renaissance.jpg';
 const imageSoviet = 'assets/images/soviet.jpg';
 const imageStudio = 'assets/images/studio.jpg';
 const imageSplash = 'assets/images/splash_1.png';
+
+
+const homeIcon = HeroIcon(HeroIcons.home);
+const settingsIcon = HeroIcon(HeroIcons.cog6Tooth);
+const darkIcon = HeroIcon(HeroIcons.moon);
+const lightIcon = HeroIcon(HeroIcons.sun);
+const magicIcon = HeroIcon(HeroIcons.sparkles);
+
+//settings_screen
+var notificationIcon = HeroIcons.bell;
+var rateIcon = HeroIcons.star;
+var rightArrow = HeroIcons.arrowRight;
+var shareIcon = HeroIcons.share;

@@ -9,6 +9,8 @@ import 'package:simple_image_genarator/views/glob_widgets/basic_icon.dart';
 import 'package:simple_image_genarator/views/glob_widgets/my_custom_icon.dart';
 import 'package:simple_image_genarator/views/glob_widgets/my_list_tile.dart';
 
+import '../../../utils/images.dart';
+
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 

@@ -24,6 +24,10 @@ var myTheme = ThemeData(
         side: BorderSide(color: secondaryColor, width: 1), // Border with color
       ),
     ),
+    progressIndicatorTheme: ProgressIndicatorThemeData(
+      color: Colors.white,
+      circularTrackColor: secondaryColor
+    ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       fillColor:

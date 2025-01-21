@@ -4,18 +4,23 @@ import 'package:simple_image_genarator/utils/style.dart';
 
 class MyCustomIcon extends StatelessWidget {
   final HeroIcons icon;
-  const MyCustomIcon({super.key, required this.icon});
+  final Color? color;
+  final VoidCallback? onTap;
+  const MyCustomIcon({super.key, required this.icon, this.color,  this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        color: Colors.blueAccent.withOpacity(0.4),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: HeroIcon(icon, color: Colors.black, size: 18),
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.blueAccent.withOpacity(0.4),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: HeroIcon(icon, color: color ?? Colors.black, size: 18),
+        ),
       ),
     );
   }

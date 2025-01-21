@@ -1,5 +1,6 @@
-import 'package:simple_image_genarator/utils/cons.dart';
 import 'package:stability_image_generation/stability_image_generation.dart';
+
+import '../../utils/images.dart';
 
 class Quality {
   final String name;
