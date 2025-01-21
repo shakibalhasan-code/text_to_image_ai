@@ -4,7 +4,6 @@ import 'package:simple_image_genarator/core/services/my_shared_preference.dart';
 import 'package:simple_image_genarator/getx/splash/splash_screen_state.dart';
 import 'package:simple_image_genarator/utils/cons.dart';
 import 'package:simple_image_genarator/utils/style.dart';
-import 'package:simple_image_genarator/views/screens/splash/intro_screen.dart';
 import 'package:simple_image_genarator/views/screens/tab/tab_screen.dart';
 
 class SplashScreen extends StatelessWidget {
