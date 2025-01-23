@@ -10,30 +10,56 @@ import 'package:heroicons/heroicons.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:simple_image_genarator/core/services/my_shared_preference.dart';
 import 'package:simple_image_genarator/utils/app_data.dart';
 import 'package:simple_image_genarator/utils/style.dart';
 import 'package:stability_image_generation/stability_image_generation.dart';
 
 class ImageGenerateState extends GetxController {
+
+
+
   var isLoading = false.obs;
   var generatedImage = Rxn<Uint8List>(); // Reactive variable to hold image
   final StabilityAI _ai = StabilityAI();
 
   final isDownloading = false.obs;
+  late SharedPreferences _pref;
+
+  @override
+  void onInit() async{
+    super.onInit();
+    _pref = await SharedPreferences.getInstance();
+
+  }
+
+  int getUserPoint(){
+    final userCurrentPoint =  _pref.getInt(USER_POINTS_KEY);
+    return userCurrentPoint ?? 0;
+  }
+
 
   Future<void> generate(
       String query, ImageAIStyle imageAIStyle, String width) async {
-    isLoading.value = true;
 
-    try {
-      Uint8List image = await _ai.generateImage(
-          apiKey: apiKey, imageAIStyle: ImageAIStyle.cartoon, prompt: query);
-      generatedImage.value = image; // Update image
-    } catch (e) {
-      Get.snackbar('Error', 'Failed to generate image: $e',
-          backgroundColor: Colors.red, colorText: Colors.white);
-    } finally {
-      isLoading.value = false;
+    if(getUserPoint() !=0){
+      try {
+        isLoading.value = true;
+
+        Uint8List image = await _ai.generateImage(
+            apiKey: apiKey, imageAIStyle: ImageAIStyle.cartoon, prompt: query);
+        generatedImage.value = image; // Update image
+        _pref.setInt(USER_POINTS_KEY, getUserPoint() -1);
+      } catch (e) {
+        Get.snackbar('Error', 'Failed to generate image: $e',
+            backgroundColor: Colors.red, colorText: Colors.white);
+      } finally {
+        isLoading.value = false;
+      }
+    }else if(getUserPoint() ==0){
+      Get.snackbar('No Credit', 'Dear user your credit has reached',backgroundColor: Colors.red);
+      debugPrint('user point is 0');
     }
   }
 

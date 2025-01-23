@@ -78,7 +78,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       TextField(
                         controller: promptController,
                         maxLines: 4,
+                        onChanged: (text){
+                          if(text.isEmpty){
+                            return;
+                          }
+                        },
                         decoration: InputDecoration(
+                          errorText: 'enter something',
                           hintText: 'Write something...',
                           hintStyle: bodyText.copyWith(color: Colors.grey),
                           filled: true,
@@ -87,7 +93,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             borderRadius: BorderRadius.circular(10),
                             borderSide: BorderSide.none,
                           ),
+
                         ),
+
                       ),
                       const SizedBox(height: 10),
                     ],

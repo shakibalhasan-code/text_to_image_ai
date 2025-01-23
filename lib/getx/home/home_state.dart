@@ -16,4 +16,5 @@ class HomeState extends GetxController {
     '9:16',
     '9:21'
   ];
+
 }

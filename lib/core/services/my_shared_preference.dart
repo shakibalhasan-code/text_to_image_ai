@@ -1,67 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:heroicons/heroicons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:simple_image_genarator/utils/app_data.dart';
-import 'package:simple_image_genarator/utils/style.dart';
-import 'package:simple_image_genarator/views/bottom_contents/points_bottom_content.dart';
-import 'package:simple_image_genarator/views/glob_widgets/my_custom_icon.dart';
 
-class MySharedServices extends GetxService {
+import '../../utils/app_data.dart';
+import '../../views/bottom_contents/points_bottom_content.dart';
 
-
+class MySharedServices extends GetxController implements GetxService {
   var userPoint = 0.obs;
   var isLoading = false.obs;
 
+  late SharedPreferences _pref;
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    initUser();
+    _pref = await SharedPreferences.getInstance();
+    await initUser();
   }
 
-
-  Future<void>getUserPoints()async{
-    try{
+  Future<void> getUserPoints() async {
+    try {
       isLoading.value = true;
-      final SharedPreferences _pref = await SharedPreferences.getInstance();
-      final currentUserPoints =  _pref.getInt(USER_POINTS_KEY);
-      if(currentUserPoints !=null){
-        userPoint.value = currentUserPoints;
-      }else{
-        userPoint.value = 0;
-      }
-    }catch(e){
-      print(e);
-    }finally{
-      isLoading.value = false;
 
+      final currentUserPoints = _pref.getInt(USER_POINTS_KEY) ?? 0;
+      debugPrint('User points: $currentUserPoints');
+
+      userPoint.value = currentUserPoints;
+    } catch (e) {
+      debugPrint('Error fetching user points: $e');
+    } finally {
+      isLoading.value = false;
     }
   }
 
-
-  Future<void>initUser()async{
-    try{
+  Future<void> initUser() async {
+    try {
       isLoading.value = true;
-      final SharedPreferences _pref = await SharedPreferences.getInstance();
-      final _userNew =  _pref.getBool(USER_KEY);
-      if(_userNew == true){
-        Get.bottomSheet(
-          backgroundColor: Colors.white,
-          PointsBottomContent(points: userPoint.value),
 
-        );
-        userPoint.value = newUserCredit;
+      final isNewUser = _pref.getBool(USER_KEY) ?? true;
+
+      if (isNewUser) {
+        userPoint.value = newUserCredit; // Assuming `newUserCredit` is defined.
         _pref.setBool(USER_KEY, false);
         _pref.setInt(USER_POINTS_KEY, userPoint.value);
 
-      }else if(_userNew ==false)  {
+        // Trigger UI action (optional to keep here)
+        Get.bottomSheet(
+          PointsBottomContent(points: userPoint.value),
+          backgroundColor: Colors.white,
+        );
+      } else {
         await getUserPoints();
       }
-
-    }catch(e){
-      print(e);
-    }finally{
+    } catch (e) {
+      debugPrint('Error during user initialization: $e');
+    } finally {
       isLoading.value = false;
     }
   }
