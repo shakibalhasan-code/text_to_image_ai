@@ -32,32 +32,7 @@ class _TabScreenState extends State<TabScreen> {
         centerTitle: true,
         title: Text(appName, style: titleText.copyWith(fontSize: 18)),
         actions: [
-          Obx((){
-            return _sharedData.isLoading.value ? Center(child: CircularProgressIndicator(),) : Container(
-              decoration: BoxDecoration(
-                color: secondaryColor.withOpacity(0.4),
-                borderRadius: BorderRadius.circular(10)
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 3),
-                child: InkWell(
-                    borderRadius: BorderRadius.circular(10),
-                    onTap: (){
 
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      HeroIcon(HeroIcons.percentBadge,color: Colors.white,size: 18,),
-                      const SizedBox(width: 5),
-                  Text(_sharedData.userPoint.value.toString(),style: bodyText.copyWith(color: Colors.white,fontWeight: FontWeight.bold))
-                  ],),
-                ),
-              ),
-            );
-              
-          }),
           const SizedBox(width: 10,)
         ],
       ),

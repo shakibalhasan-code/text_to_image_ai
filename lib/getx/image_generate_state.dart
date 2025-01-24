@@ -23,6 +23,8 @@ class ImageGenerateState extends GetxController {
   var isLoading = false.obs;
   var generatedImage = Rxn<Uint8List>(); // Reactive variable to hold image
   final StabilityAI _ai = StabilityAI();
+  final _mySharedPref = Get.put(MySharedServices());
+
 
   final isDownloading = false.obs;
   late SharedPreferences _pref;
@@ -35,10 +37,9 @@ class ImageGenerateState extends GetxController {
   }
 
   int getUserPoint(){
-    final userCurrentPoint =  _pref.getInt(USER_POINTS_KEY);
+    final userCurrentPoint =  _mySharedPref.userPoint.value;
     return userCurrentPoint ?? 0;
   }
-
 
   Future<void> generate(
       String query, ImageAIStyle imageAIStyle, String width) async {
@@ -46,11 +47,12 @@ class ImageGenerateState extends GetxController {
     if(getUserPoint() !=0){
       try {
         isLoading.value = true;
-
         Uint8List image = await _ai.generateImage(
-            apiKey: apiKey, imageAIStyle: ImageAIStyle.cartoon, prompt: query);
+            apiKey: apiKey, imageAIStyle: imageAIStyle, prompt: query);
         generatedImage.value = image; // Update image
-        _pref.setInt(USER_POINTS_KEY, getUserPoint() -1);
+        _mySharedPref.userPoint.value = _mySharedPref.userPoint.value -perImageCredit;
+        await _pref.setInt(USER_POINTS_KEY, getUserPoint() -perImageCredit);
+
       } catch (e) {
         Get.snackbar('Error', 'Failed to generate image: $e',
             backgroundColor: Colors.red, colorText: Colors.white);
@@ -75,7 +77,6 @@ class ImageGenerateState extends GetxController {
 
       if (await _requestPermission(Permission.storage) == true) {
         print("Permission is granted");
-
         final directory = await getExternalStorageDirectory();
         final customDir = Directory('${directory?.path}/TextToImage');
         if (!customDir.existsSync()) {

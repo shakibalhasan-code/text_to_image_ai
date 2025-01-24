@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:heroicons/heroicons.dart';
 import 'package:simple_image_genarator/core/models/quality_model.dart';
+import 'package:simple_image_genarator/core/services/my_shared_preference.dart';
 import 'package:simple_image_genarator/getx/image_generate_state.dart';
 import 'package:simple_image_genarator/utils/style.dart';
 import 'package:simple_image_genarator/views/glob_widgets/gradiunt_container.dart';
@@ -21,6 +22,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final ImageGenerateState _imageGenerateState = Get.put(ImageGenerateState());
+  final MySharedServices _sharedServices = Get.put(MySharedServices());
+
   final TextEditingController promptController = TextEditingController();
 
   final List<Quality> qualityList = Quality.getQualityList();
@@ -39,6 +42,9 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedResolution = '1:1';
   String selectedQuality = 'Anime';
   ImageAIStyle _imageAIStyle = ImageAIStyle.anime;
+
+  final _key = GlobalKey<FormState>();
+
 
   @override
   void initState() {
@@ -72,10 +78,39 @@ class _HomeScreenState extends State<HomeScreen> {
                             'Write Your Prompt Here',
                             style: titleText,
                           ),
+                          const Spacer(),
+                          Obx((){
+                            return _sharedServices.isLoading.value ? Center(child: CircularProgressIndicator(),) : Container(
+                              decoration: BoxDecoration(
+                                  color: secondaryColor.withOpacity(0.4),
+                                  borderRadius: BorderRadius.circular(10)
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 3),
+                                child: InkWell(
+                                  borderRadius: BorderRadius.circular(10),
+                                  onTap: (){
+
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      HeroIcon(HeroIcons.percentBadge,color: Colors.white,size: 18,),
+                                      const SizedBox(width: 5),
+                                      Text(_sharedServices.userPoint.value.toString(),style: bodyText.copyWith(color: Colors.white,fontWeight: FontWeight.bold))
+                                    ],),
+                                ),
+                              ),
+                            );
+
+                          }),
                         ],
                       ),
                       const SizedBox(height: 10),
-                      TextField(
+                      Form(
+                        key: _key,
+                          child: TextFormField(
                         controller: promptController,
                         maxLines: 4,
                         onChanged: (text){
@@ -83,8 +118,15 @@ class _HomeScreenState extends State<HomeScreen> {
                             return;
                           }
                         },
+
+                        validator: (value){
+                          if(value ==null || value.isEmpty){
+                            return 'enter something..';
+                          }
+                          return null;
+                        },
                         decoration: InputDecoration(
-                          errorText: 'enter something',
+
                           hintText: 'Write something...',
                           hintStyle: bodyText.copyWith(color: Colors.grey),
                           filled: true,
@@ -96,7 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         ),
 
-                      ),
+                      )),
                       const SizedBox(height: 10),
                     ],
                   ),
@@ -113,7 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             child: AnimatedTextKit(
                               animatedTexts: [
-                                FadeAnimatedText('Geting promt..'),
+                                FadeAnimatedText('Getting prompt..'),
                                 FadeAnimatedText('Sending Data..'),
                                 FadeAnimatedText('Generating Image..'),
                               ],
@@ -256,14 +298,19 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             onPressed: () {
-              final prompt = promptController.text.trim();
-              if (prompt.isNotEmpty &&
-                  selectedQuality.isNotEmpty &&
-                  selectedResolution.isNotEmpty) {
-                _imageGenerateState.generate(
-                    prompt, _imageAIStyle, selectedResolution);
-              } else {
-                Get.snackbar('Empty Fields', 'Please fill up all fields');
+              if(_key.currentState!.validate()){
+                print('proccesing');
+                final prompt = promptController.text.trim();
+                if (prompt.isNotEmpty &&
+                    selectedQuality.isNotEmpty &&
+                    selectedResolution.isNotEmpty) {
+                  _imageGenerateState.generate(
+                      prompt, _imageAIStyle, selectedResolution);
+                } else {
+                  Get.snackbar('Empty Fields', 'Please fill up all fields');
+                }
+              }else{
+                return;
               }
             },
             child: Row(

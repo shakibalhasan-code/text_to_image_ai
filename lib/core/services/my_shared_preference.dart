@@ -15,13 +15,13 @@ class MySharedServices extends GetxController implements GetxService {
   void onInit() async {
     super.onInit();
     _pref = await SharedPreferences.getInstance();
+
     await initUser();
   }
 
   Future<void> getUserPoints() async {
     try {
       isLoading.value = true;
-
       final currentUserPoints = _pref.getInt(USER_POINTS_KEY) ?? 0;
       debugPrint('User points: $currentUserPoints');
 
