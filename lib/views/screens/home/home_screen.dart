@@ -297,14 +297,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            onPressed: () {
+            onPressed: () async{
               if(_key.currentState!.validate()){
                 print('proccesing');
                 final prompt = promptController.text.trim();
                 if (prompt.isNotEmpty &&
                     selectedQuality.isNotEmpty &&
                     selectedResolution.isNotEmpty) {
-                  _imageGenerateState.generate(
+                  await _imageGenerateState.generate(
                       prompt, _imageAIStyle, selectedResolution);
                 } else {
                   Get.snackbar('Empty Fields', 'Please fill up all fields');

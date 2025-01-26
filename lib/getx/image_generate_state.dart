@@ -44,25 +44,26 @@ class ImageGenerateState extends GetxController {
   Future<void> generate(
       String query, ImageAIStyle imageAIStyle, String width) async {
 
-    if(getUserPoint() !=0){
+    if (getUserPoint() > 0 && getUserPoint() >= perImageCredit) {
       try {
         isLoading.value = true;
         Uint8List image = await _ai.generateImage(
             apiKey: apiKey, imageAIStyle: imageAIStyle, prompt: query);
         generatedImage.value = image; // Update image
-        _mySharedPref.userPoint.value = _mySharedPref.userPoint.value -perImageCredit;
-        await _pref.setInt(USER_POINTS_KEY, getUserPoint() -perImageCredit);
-
+        _mySharedPref.userPoint.value = _mySharedPref.userPoint.value - perImageCredit;
+        await _pref.setInt(USER_POINTS_KEY, getUserPoint() - perImageCredit);
       } catch (e) {
         Get.snackbar('Error', 'Failed to generate image: $e',
             backgroundColor: Colors.red, colorText: Colors.white);
       } finally {
         isLoading.value = false;
       }
-    }else if(getUserPoint() ==0){
-      Get.snackbar('No Credit', 'Dear user your credit has reached',backgroundColor: Colors.red);
-      debugPrint('user point is 0');
+    } else if (getUserPoint() == 0 || getUserPoint() < perImageCredit) {
+      Get.snackbar('No Credit', 'Dear user, you do not have enough credits.',
+          backgroundColor: Colors.red);
+      debugPrint('Insufficient user points');
     }
+
   }
 
   // Function to save the image to external storage (gallery)
