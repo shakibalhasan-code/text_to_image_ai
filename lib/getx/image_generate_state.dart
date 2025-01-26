@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_image_genarator/core/services/my_shared_preference.dart';
 import 'package:simple_image_genarator/utils/app_data.dart';
 import 'package:simple_image_genarator/utils/style.dart';
+import 'package:simple_image_genarator/views/screens/earn_credits/earn_coints_screen.dart';
 import 'package:stability_image_generation/stability_image_generation.dart';
 
 class ImageGenerateState extends GetxController {
@@ -37,7 +38,8 @@ class ImageGenerateState extends GetxController {
   }
 
   int getUserPoint(){
-    final userCurrentPoint =  _mySharedPref.userPoint.value;
+    // final userCurrentPoint =  _mySharedPref.userPoint.value;
+    final userCurrentPoint =  0;
     return userCurrentPoint ?? 0;
   }
 
@@ -58,7 +60,33 @@ class ImageGenerateState extends GetxController {
       } finally {
         isLoading.value = false;
       }
+
     } else if (getUserPoint() == 0 || getUserPoint() < perImageCredit) {
+      Get.dialog(
+        AlertDialog(
+          backgroundColor: secondaryColor.withOpacity(0.9),
+          title: Text('No Credit', style: titleText),
+          content: Column(
+            mainAxisSize: MainAxisSize.min, // Ensure the Column takes minimal height
+            children: [
+              Text('To generate the image, you must have $perImageCredit credits.',style: bodyText.copyWith(color: Colors.white),),
+              const SizedBox(height: 20),
+              OutlinedButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.black)),
+                onPressed: () {
+
+                },
+                child: Text(
+                  'Watch a Video Ad',
+                  style: bodyText.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
       Get.snackbar('No Credit', 'Dear user, you do not have enough credits.',
           backgroundColor: Colors.red);
       debugPrint('Insufficient user points');

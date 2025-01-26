@@ -36,7 +36,6 @@ class MySharedServices extends GetxController implements GetxService {
   Future<void> initUser() async {
     try {
       isLoading.value = true;
-
       final isNewUser = _pref.getBool(USER_KEY) ?? true;
 
       if (isNewUser) {

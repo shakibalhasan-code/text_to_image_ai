@@ -52,11 +52,33 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    promptController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
       backgroundColor: primaryColor,
+      // floatingActionButton: InkWell(
+      //   borderRadius: BorderRadius.circular(50),
+      //   onTap: (){
+      //
+      //   },
+      //   child: CircleAvatar(
+      //     radius: 20,
+      //     child: ClipRRect(
+      //       borderRadius: BorderRadius.circular(50),
+      //       child: Image(
+      //         height: 60,
+      //         width: 60,
+      //           image: NetworkImage('https://gifdb.com/images/high/color-wheel-pixel-art-jg040923kswcmf9v.gif')),
+      //     ),
+      //   ),
+      // ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -287,6 +309,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         const SizedBox(height: 20),
+
         SizedBox(
           width: size.width,
           height: 50,
@@ -330,6 +353,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
+
+        // SizedBox(
+        //   width: double.infinity,
+        //   child: TextButton(onPressed: (){}, child: Text('Get More Credit Now',style: bodyText.copyWith(fontSize: 12))),
+        // )
       ],
     );
   }
