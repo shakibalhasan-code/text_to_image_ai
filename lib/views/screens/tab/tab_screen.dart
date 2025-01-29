@@ -46,13 +46,20 @@ class _TabScreenState extends State<TabScreen> {
           const SizedBox(
             height: 10,
           ),
-          _adServices.isLoaded.value
-              ? SizedBox(
-                  child: _adServices.bannerAd == null
-                      ? const SizedBox()
-                      : AdWidget(ad: _adServices.bannerAd!),
-                )
-              : SizedBox()
+          Obx(() {
+            return _adServices.isLoaded.value
+                ? Align(
+                    alignment: Alignment.bottomCenter,
+                    child: SafeArea(
+                      child: SizedBox(
+                        width: _adServices.bannerAd!.size.width.toDouble(),
+                        height: _adServices!.bannerAd!.size.height.toDouble(),
+                        child: AdWidget(ad: _adServices.bannerAd!),
+                      ),
+                    ),
+                  )
+                : SizedBox();
+          })
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
