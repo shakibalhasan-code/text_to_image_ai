@@ -13,6 +13,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
   Get.lazyPut(() => AdsServices());
+  Get.lazyPut(()=> AdsServices());
+
   runApp(MyApp());
 }
 

@@ -47,7 +47,7 @@ class _TabScreenState extends State<TabScreen> {
             height: 10,
           ),
           Obx(() {
-            return _adServices.isLoaded.value
+            return _adServices.isBLoaded.value
                 ? Align(
                     alignment: Alignment.bottomCenter,
                     child: SafeArea(

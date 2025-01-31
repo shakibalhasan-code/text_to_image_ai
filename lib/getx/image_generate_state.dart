@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:simple_image_genarator/core/services/ads_services.dart';
 import 'package:simple_image_genarator/core/services/my_shared_preference.dart';
 import 'package:simple_image_genarator/utils/app_data.dart';
 import 'package:simple_image_genarator/utils/style.dart';
@@ -25,6 +26,8 @@ class ImageGenerateState extends GetxController {
   var generatedImage = Rxn<Uint8List>(); // Reactive variable to hold image
   final StabilityAI _ai = StabilityAI();
   final _mySharedPref = Get.put(MySharedServices());
+  final _adServices = Get.find<AdsServices>();
+
 
 
   final isDownloading = false.obs;
@@ -45,7 +48,6 @@ class ImageGenerateState extends GetxController {
 
   Future<void> generate(
       String query, ImageAIStyle imageAIStyle, String width) async {
-
     if (getUserPoint() > 0 && getUserPoint() >= perImageCredit) {
       try {
         isLoading.value = true;
@@ -54,6 +56,7 @@ class ImageGenerateState extends GetxController {
         generatedImage.value = image; // Update image
         _mySharedPref.userPoint.value = _mySharedPref.userPoint.value - perImageCredit;
         await _pref.setInt(USER_POINTS_KEY, getUserPoint() - perImageCredit);
+        _adServices.showInterstitialAd();
       } catch (e) {
         Get.snackbar('Error', 'Failed to generate image: $e',
             backgroundColor: Colors.red, colorText: Colors.white);
